@@ -85,7 +85,7 @@
 								"value": 317.89,
 								"currency": "EUR"
 							    }
-							}
+					}
 		 */
 
  4. Update Product By Product Id	
@@ -124,9 +124,11 @@
 						        "value": 317.89,
 						        "currency": "EUR"
 						    }
-						}
+	 *		      }
 	 
- 	 */
+         */
+	 
+	 
  6. Get Product Name by Product ID
  	
 		/**
