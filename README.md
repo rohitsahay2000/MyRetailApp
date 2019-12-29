@@ -1,13 +1,19 @@
 # My Retail Restful Service
 
 *** A simple restful app for product entity/resource crud plus some other functionalities.
+
 *** Uses h2 (in memory database) to persist data.
+
 *** Can be directly imported into any java based IDE.
+
 *** To run and build: maven build
+
 *** To create the war: maven install
+
 *** Deploy the war to tomcat. 
 
  1. Create Product
+ 
 		 /**
 		     * Api to create a product
 		     * Sample Api Request: POST http://localhost:8080/MyRetailApp/myRetail/product
@@ -27,7 +33,8 @@
 
 2. 	Get List of products.
    
-   /**
+       
+       /**
 	 * Api to get list of created products
 	 * Sample Api Request: GET http://localhost:8080/MyRetailApp/myRetail/product
 	 * @param request
@@ -63,7 +70,7 @@
 				]
 	 */
 
-3. Get Product by Product Id
+3.  Get Product by Product Id
 
    	/**
 	 * Api to get product by product id.
@@ -101,8 +108,8 @@
 						}
 	 */
  
- 5.
-   /**
+ 5.    
+       /**
 	 * Api which will call an api to get pricing detail and combine with product id and
 	 * name from http request into a single response.
 	 * 
