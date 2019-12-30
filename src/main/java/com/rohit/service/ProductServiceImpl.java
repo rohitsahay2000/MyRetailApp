@@ -20,7 +20,11 @@ public class ProductServiceImpl implements ProductService {
 	private ProductDao productDao;
 
 	@Transactional("txManager")
-	public Product add(Product product) throws Exception {
+	public Product add(Product product) throws Exception {		
+		if(product==null || product.getName()==null || product.getPrice()==null ||
+				product.getPrice().getCurrency()==null || product.getPrice().getValue()==null) {
+			throw new IllegalArgumentException("Required Product Data cannot be null in request body");		
+		}
 		return productDao.save(product);
 	}
 
@@ -29,11 +33,18 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	public Product getProduct(Integer productId) throws Exception {
+		if(productId==null) {
+			throw new IllegalArgumentException("Product Id cannot be null");
+		}
 		return productDao.getProduct(productId);
 	}
 
 	public Product updateProduct(Product product, Integer productId) throws Exception {
-
+		
+		if(productId==null || product==null || product.getPrice()==null) {
+			throw new IllegalArgumentException("Required parameters cannot be null");
+		}
+		
 		Product existingProduct = productDao.getProduct(productId);
 		if (product.getName() != null)
 			existingProduct.setName(product.getName());
@@ -45,6 +56,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	public ProductPrice getProductPrice(Integer productId) throws Exception {
+		if(productId==null) {
+			throw new IllegalArgumentException("Product Id cannot be null");
+		}
 		return productDao.getProductPrice(productId);
 	}
 

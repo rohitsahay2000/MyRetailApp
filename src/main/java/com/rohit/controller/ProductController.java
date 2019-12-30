@@ -1,7 +1,9 @@
 package com.rohit.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,13 @@ public class ProductController {
 			responseHeaders.add("productName", product.getName());
 
 			return new ResponseEntity<ProductResponse>(productResponse, responseHeaders, HttpStatus.OK);
+		}
+		
+		catch (IllegalArgumentException ex) {
+			LOGGER.error("Product Creation Failed with exception {}", ex);
+			ProductResponse productResponse = new ProductResponse.ProductResponseBuilder(HttpStatus.BAD_REQUEST.toString())
+					.message("Invalid parameters").build();
+			return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.BAD_REQUEST);
 		}
 
 		catch (DuplicateKeyException ex) {
@@ -145,7 +154,12 @@ public class ProductController {
 		try {
 			Product product = productService.getProduct(id);
 			return new ResponseEntity<Product>(product, HttpStatus.OK);
-		} catch (Exception e) {
+		} 
+		catch (IllegalArgumentException ex) {
+			LOGGER.error("Product Updation Failed with exception {}", ex);
+			return new ResponseEntity<Product>(new Product(), HttpStatus.BAD_REQUEST);
+		}		
+		catch (Exception e) {
 			LOGGER.error("Product retrieval failed with exception {}", e);
 			return new ResponseEntity<Product>(new Product(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -185,7 +199,15 @@ public class ProductController {
 
 			return new ResponseEntity<ProductResponse>(productResponse, responseHeaders, HttpStatus.OK);
 
-		} catch (EmptyResultDataAccessException ex) {
+		} 
+		catch (IllegalArgumentException ex) {
+			LOGGER.error("Product Updation Failed with exception {}", ex);
+			ProductResponse productResponse = new ProductResponse.ProductResponseBuilder(
+					HttpStatus.BAD_REQUEST.toString()).message("Invalid parameter").build();
+			return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.BAD_REQUEST);
+		}	
+		
+		catch (EmptyResultDataAccessException ex) {
 			LOGGER.error("Product to be updated not found {}", ex);
 			ProductResponse productResponse = new ProductResponse.ProductResponseBuilder(
 					HttpStatus.NOT_FOUND.toString()).message("Product Not Found").build();
@@ -261,21 +283,23 @@ public class ProductController {
 	 * @param request
 	 * @return Product Response
 	 * Sample Response : {
-							   "test5",							   
-						  }
+						    "name": "test5"
+						 }
 	 */
 	@RequestMapping(value = "/product/{productid}/name", method = RequestMethod.GET)
-	public ResponseEntity<String> getProductNameFromId(@PathVariable Integer productid) {
+	public ResponseEntity<Map<String,String>> getProductNameFromId(@PathVariable Integer productid) {
 
 		try {
 			Product product = productService.getProduct(productid);
-			return new ResponseEntity<String>(product.getName(), HttpStatus.OK);
+			Map<String,String> mMap = new HashMap<String, String>();
+			mMap.put("name", product.getName());
+			return new ResponseEntity<Map<String,String>>(mMap, HttpStatus.OK);
 		} catch (EmptyResultDataAccessException ex) {
 			LOGGER.error("ProductId not found {}", ex);
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String,String>>(new HashMap<String, String>(), HttpStatus.NOT_FOUND);
 		}catch (Exception e) {
 			LOGGER.error("Product retrieval failed with exception {}", e);
-			return new ResponseEntity<String>("", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Map<String,String>>(new HashMap<String, String>(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
